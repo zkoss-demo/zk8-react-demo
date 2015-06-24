@@ -1,0 +1,22 @@
+<zk:zk  xmlns="native" xmlns:x="xhtml" xmlns:sh="shadow" xmlns:zk="zk">
+<x:html sclass="no-js" lang="en">
+	<x:head>
+		<meta content="ZK8 Series: Build Your Own Responsive Website in 10 Seconds" name="description"/>
+		<meta content="ZK, Foundation, JQuery, ZK MVVM, Java, DataBinding, Responsive Design, Bootstrap" name="keywords"/>
+		<meta charset="utf-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>ZK React Integration</title>
+		<link rel="shortcut icon" type="image/x-icon" href="http://www.zkoss.org/img/favicon.ico"/>
+		<link rel="stylesheet" href="css/base.css" />
+		<script src="js/react.js"></script>
+		<script src="js/JSXTransformer.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+	</x:head>
+	<x:body>
+		<x:div id="content" viewModel="@id('vm') @init('org.zkoss.blog.example.ReactVM')"></x:div>
+    	<script type="text/jsx;harmony=true" src="js/demo.js"></script>
+
+	</x:body>
+</x:html>
+</zk:zk>
