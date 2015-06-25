@@ -1,6 +1,6 @@
 <zk:zk  xmlns="native" xmlns:x="xhtml" xmlns:sh="shadow" xmlns:zk="zk">
-<x:html sclass="no-js" lang="en">
-	<x:head>
+<html sclass="no-js" lang="en">
+	<head>
 		<meta content="ZK8 Series: Build Your Own Responsive Website in 10 Seconds" name="description"/>
 		<meta content="ZK, Foundation, JQuery, ZK MVVM, Java, DataBinding, Responsive Design, Bootstrap" name="keywords"/>
 		<meta charset="utf-8" />
@@ -8,15 +8,16 @@
 			content="width=device-width, initial-scale=1.0" />
 		<title>ZK React Integration</title>
 		<link rel="shortcut icon" type="image/x-icon" href="http://www.zkoss.org/img/favicon.ico"/>
-		<link rel="stylesheet" href="css/base.css" />
+		<link rel="stylesheet" href="css/zk8_react_demo.css" />
+		<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
 		<script src="js/react.js"></script>
 		<script src="js/JSXTransformer.js"></script>
+		<script src="bower_components/react-bootstrap/react-bootstrap.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
-	</x:head>
-	<x:body>
+	</head>
+	<body>
 		<x:div id="content" viewModel="@id('vm') @init('org.zkoss.blog.example.ReactVM')"></x:div>
     	<script type="text/jsx;harmony=true" src="js/demo.js"></script>
-
-	</x:body>
-</x:html>
+	</body>
+</html>
 </zk:zk>

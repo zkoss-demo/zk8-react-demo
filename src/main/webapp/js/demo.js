@@ -1,25 +1,23 @@
 zk.afterMount(function () {
 var zkbinder = zkbind.$('$content');
 
-var Comment = React.createClass({
-  render: function() {
-    var rawMarkup = marked(this.props.children.toString(), {sanitize: true});
-    return (
-      <div className="comment">
-        <h2 className="commentAuthor">
-          {this.props.author}
-        </h2>
-        <span dangerouslySetInnerHTML={{__html: rawMarkup}} />
-      </div>
-    );
-  }
-});
+//react-bootstrap variables
+var ButtonInput = ReactBootstrap.ButtonInput,
+	Input = ReactBootstrap.Input,
+	Panel = ReactBootstrap.Panel,
+	Row = ReactBootstrap.Row,
+	Col = ReactBootstrap.Col,
+	ListGroupItem = ReactBootstrap.ListGroupItem,
+	ListGroup = ReactBootstrap.ListGroup,
+	Label = ReactBootstrap.Label,
+	Well = ReactBootstrap.Well,
+	PageHeader = ReactBootstrap.PageHeader;
 
 var CommentBox = React.createClass({
   loadCommentsFromServer: function() {
 		var self = this;
+		//once comments change, doCommentsChange will be invoked with comments as arguments
 		zkbinder.after('doCommentsChange', function (evt) {
-			console.log('after comments change');
 			self.setState({data: evt});
 		});
     
@@ -28,10 +26,7 @@ var CommentBox = React.createClass({
     var comments = this.state.data;
     comments.push(comment);
     this.setState({data: comments}, function() {
-      // `setState` accepts a callback. To avoid (improbable) race condition,
-      // `we'll send the ajax request right after we optimistically set the new
-      // `state.
-//    	zkbinder.command('doAddComment', {author: comment.author, text: comment.text});
+    	//invoke doAddComment to update comments
     	zkbinder.command('doAddComment', comment);
     });
   },
@@ -40,15 +35,16 @@ var CommentBox = React.createClass({
   },
   componentDidMount: function() {
     this.loadCommentsFromServer();
-    //setInterval(this.loadCommentsFromServer, this.props.pollInterval);
   },
   render: function() {
     return (
-      <div className="commentBox">
-        <h1>Comments</h1>
-        <CommentList data={this.state.data} />
-        <CommentForm onCommentSubmit={this.handleCommentSubmit} />
-      </div>
+    	<div className="container">
+        	<PageHeader>ZK8 Discussion Channel</PageHeader>
+			<Panel bsStyle='info'>
+				<CommentList data={this.state.data} />
+		        <CommentForm onCommentSubmit={this.handleCommentSubmit} />
+			</Panel>
+		</div>
     );
   }
 });
@@ -57,48 +53,82 @@ var CommentList = React.createClass({
   render: function() {
     var commentNodes = this.props.data.map(function(comment, index) {
       return (
-        // `key` is a React-specific concept and is not mandatory for the
-        // purpose of this tutorial. if you're curious, see more here:
-        // http://facebook.github.io/react/docs/multiple-components.html#dynamic-children
-        <Comment author={comment.author} key={index}>
+        <Comment author={comment.author} key={index} index={index}>
           {comment.text}
         </Comment>
       );
     });
     return (
-      <div className="commentList">
-        {commentNodes}
-      </div>
+	  	<ListGroup>
+	  		{commentNodes}
+	  	</ListGroup>
     );
   }
+});
+
+var Comment = React.createClass({
+	  render: function() {
+	    var rawMarkup = marked(this.props.children.toString(), {sanitize: true});
+	    var style = this.props.index % 2 == 0 ? 'info' : 'success';
+	    return (
+	      <ListGroupItem bsStyle={style}>
+	        <h3>
+		      {this.props.author}:  
+	        </h3>
+	        <Well>
+	        	<span dangerouslySetInnerHTML={{__html: rawMarkup}} />
+	        </Well>
+	      </ListGroupItem>
+	    );
+	  }
 });
 
 var CommentForm = React.createClass({
-  handleSubmit: function(e) {
-    e.preventDefault();
-    var author = React.findDOMNode(this.refs.author).value.trim();
-    var text = React.findDOMNode(this.refs.text).value.trim();
-    if (!text || !author) {
-      return;
-    }
-    this.props.onCommentSubmit({author: author, text: text});
-    React.findDOMNode(this.refs.author).value = '';
-    React.findDOMNode(this.refs.text).value = '';
-  },
-  render: function() {
-    return (
-      <form className="commentForm" onSubmit={this.handleSubmit}>
-        <input type="text" placeholder="Your name" ref="author" />
-        <input type="text" placeholder="Say something..." ref="text" />
-        <input type="submit" value="Post" />
-      </form>
-    );
-  }
+	  getInitialState: function() {
+		  return { disabled: true, author: null };
+	  },
+	  handleSubmit: function(e) {
+	    e.preventDefault();
+	    var author = this.state.author || this.refs.author.getValue().trim();
+	    var text = this.refs.text.getValue().trim();
+	    
+	    this.props.onCommentSubmit({author: author, text: text});
+	    //this.refs.author.getInputDOMNode().value = ''; //hide author input forever
+	    this.refs.text.getInputDOMNode().value = '';
+	    this.setState({disabled: true, author: author});
+	  },
+	  handleChange: function() {
+		  var authorLen = this.state.author ? this.state.author.length : this.refs.author.getValue().trim().length;
+		  var textLen = this.refs.text.getValue().trim().length;
+		  if (authorLen > 0 && textLen > 0)
+			  this.setState({disabled: false});
+		  else
+			  this.setState({disabled: true});
+	  },
+	  isAuthorExist: function() {
+		  return this.state.author ? null : 
+			  (<Input type="text" placeholder="Your name" ref="author" onChange={this.handleChange} />); 
+	  },
+	  render: function() {
+	    return (
+    		<form onSubmit={this.handleSubmit}>
+    	      {this.isAuthorExist()}
+    	      <Row>
+    	      	<Col md={11}>
+    	      		<Input type="text" placeholder="Say something..." ref="text" onChange={this.handleChange} />
+    	      	</Col>
+    	      	<Col md={1}>
+    	      		<ButtonInput type="submit" value="Post" bsStyle="primary" bsSize="medium" disabled={this.state.disabled} />
+    	      	</Col>
+    	      </Row>
+    	    </form>
+	    );
+	  }
 });
 
 React.render(
-  <CommentBox pollInterval={2000} />,
+  <CommentBox />,
   document.getElementById('content')
 );
 
-})
+});

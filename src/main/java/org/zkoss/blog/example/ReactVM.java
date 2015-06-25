@@ -51,6 +51,7 @@ public class ReactVM {
 				if ("onAddComment".equals(event.getName())) {
 					Map<String, Object> param = new HashMap<String, Object>();
 					param.put("comment", event.getData());
+					//trigger all instances to update comments
 					BindUtils.postGlobalCommand(null, null, "refreshComments", param);
 				}
 			}
@@ -60,9 +61,9 @@ public class ReactVM {
 	@GlobalCommand
 	@NotifyChange("comments")
 	public void refreshComments(@BindingParam("comment") Comment comment) {
+		//sync comments with other instances
 		if (!comments.contains(comment))
 			comments.add(comment);
-		System.out.println("refersh comments: " + comment);
 	}
 	
 	@Command
@@ -71,12 +72,11 @@ public class ReactVM {
 		Comment c = new Comment(author, text);
 		comments.add(c);
 		commentQueue.publish(new Event("onAddComment", null, c));
-		System.out.println("do add comment: " + author + ", " + text);
 	}
 	
 	@Command
 	public void doCommentsChange() {
-		System.out.println(Executions.getCurrent().getDesktop() + " do comments change: " + comments.size());
+		//empty function, only for sending comments to client
 	}
 	
 	public Collection<Comment> getComments() {
