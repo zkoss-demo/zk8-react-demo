@@ -41,9 +41,9 @@ var CommentBox = React.createClass({
     	<div className="container">
         	<PageHeader>ZK8 Discussion Channel</PageHeader>
 			<Panel bsStyle='info'>
-				<CommentList data={this.state.data} />
 		        <CommentForm onCommentSubmit={this.handleCommentSubmit} />
-			</Panel>
+		        <CommentList data={this.state.data} />
+		    </Panel>
 		</div>
     );
   }
@@ -59,7 +59,7 @@ var CommentList = React.createClass({
       );
     });
     return (
-	  	<ListGroup>
+    	<ListGroup>
 	  		{commentNodes}
 	  	</ListGroup>
     );
