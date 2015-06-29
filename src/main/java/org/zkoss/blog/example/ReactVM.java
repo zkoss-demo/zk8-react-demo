@@ -36,7 +36,7 @@ import org.zkoss.zk.ui.event.EventQueues;
  */
 @NotifyCommand(value="doCommentsChange", onChange="_vm_.comments")
 @ToClientCommand({"doAddComment", "doCommentsChange"})
-@ToServerCommand({"doAddComment", "doCommentsChange"})
+@ToServerCommand({"doAddComment"})
 public class ReactVM {
 
 	private Collection<Comment> comments;
@@ -72,11 +72,6 @@ public class ReactVM {
 		Comment c = new Comment(author, text);
 		comments.add(c);
 		commentQueue.publish(new Event("onAddComment", null, c));
-	}
-	
-	@Command
-	public void doCommentsChange() {
-		//empty function, only for sending comments to client
 	}
 	
 	public Collection<Comment> getComments() {
